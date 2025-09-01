@@ -1,18 +1,33 @@
-name: Docker Image CI
+name: Docker Image Release
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch: # Allows manual trigger
+    inputs:
+      tag:
+        description: 'Docker image tag (e.g., 1.0, 0.1-preview)'
+        required: true
+        default: 'latest'
 
 jobs:
-
-  build:
-
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}/demodeck-auth-api:${{ github.event.inputs.tag }}
+          docker build . --file Dockerfile --tag $IMAGE_NAME
+
+      - name: Push Docker image
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}/demodeck-auth-api:${{ github.event.inputs.tag }}
+          docker push $IMAGE_NAME
