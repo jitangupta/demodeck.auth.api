@@ -10,4 +10,10 @@ namespace DemoDeck.Auth.Api
 
         public string? Summary { get; set; }
     }
+
+    public class WeatherForecastResponse
+    {
+        public WeatherForecast[] Data { get; set; } = Array.Empty<WeatherForecast>();
+        public string ApiVersion { get; set; } = string.Empty;
+    }
 }
