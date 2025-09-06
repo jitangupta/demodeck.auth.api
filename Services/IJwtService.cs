@@ -6,6 +6,5 @@ namespace DemoDeck.Auth.Api.Services
     public interface IJwtService
     {
         string GenerateToken(TenantUser user, string tenantName);
-        ClaimsPrincipal? ValidateToken(string token);
     }
 }
