@@ -1,0 +1,52 @@
+### Health Check
+GET https://localhost:5002/health
+
+### Generate Token - ACME User
+POST https://localhost:5002/api/auth/token
+Content-Type: application/json
+
+{
+    "username": "john.doe",
+    "password": "password123",
+    "tenantName": "acme"
+}
+
+### Generate Token - GlobalX User
+POST https://localhost:5002/api/auth/token
+Content-Type: application/json
+
+{
+    "username": "alex.smith",
+    "password": "password123",
+    "tenantName": "globalx"
+}
+
+### Generate Token - Initech User
+POST https://localhost:5002/api/auth/token
+Content-Type: application/json
+
+{
+    "username": "peter.gibbons",
+    "password": "password123",
+    "tenantName": "initech"
+}
+
+### Generate Token - Umbrella User
+POST https://localhost:5002/api/auth/token
+Content-Type: application/json
+
+{
+    "username": "albert.wesker",
+    "password": "password123",
+    "tenantName": "umbrella"
+}
+
+### Invalid Credentials Test
+POST https://localhost:5002/api/auth/token
+Content-Type: application/json
+
+{
+    "username": "invalid.user",
+    "password": "wrongpassword",
+    "tenantName": "acme"
+}
