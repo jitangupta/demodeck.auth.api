@@ -1,8 +1,5 @@
 using DemoDeck.Auth.Api.Services;
 using DemoDeck.Auth.Api.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace DemoDeck.Auth.Api
 {

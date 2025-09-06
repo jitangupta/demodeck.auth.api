@@ -1,5 +1,5 @@
-using System.Text.Json;
 using DemoDeck.Auth.Api.Models;
+using System.Text.Json;
 
 namespace DemoDeck.Auth.Api.Services
 {
@@ -9,17 +9,20 @@ namespace DemoDeck.Auth.Api.Services
         private readonly IJwtService _jwtService;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<AuthService> _logger;
+        private readonly IConfiguration _configuration;
 
         public AuthService(
             ITenantUserRepository userRepository,
             IJwtService jwtService,
             IHttpClientFactory httpClientFactory,
-            ILogger<AuthService> logger)
+            ILogger<AuthService> logger,
+            IConfiguration configuration)
         {
             _userRepository = userRepository;
             _jwtService = jwtService;
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
@@ -99,7 +102,8 @@ namespace DemoDeck.Auth.Api.Services
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"https://localhost:5001/api/tenant/{tenantName}");
+                var baseUrl = _configuration.GetValue<string>("TenantUrl")?.TrimEnd('/') ?? string.Empty;
+                var response = await client.GetAsync($"{baseUrl}/{tenantName}");
                 
                 if (!response.IsSuccessStatusCode)
                     return null;
