@@ -14,6 +14,18 @@ namespace DemoDeck.Auth.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Configure CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("http://localhost:8080", "https://localhost:8080")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
+
             // HTTP Client for Tenant API calls
             builder.Services.AddHttpClient();
 
@@ -42,6 +54,7 @@ namespace DemoDeck.Auth.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
