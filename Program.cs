@@ -15,14 +15,21 @@ namespace DemoDeck.Auth.Api
             builder.Services.AddSwaggerGen();
 
             // Configure CORS
+            var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[] { "http://localhost:8080" };
+            var corsAllowCredentials = builder.Configuration.GetValue<bool>("Cors:AllowCredentials", true);
+            
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://localhost:8080", "https://localhost:8080")
+                    policy.WithOrigins(corsAllowedOrigins)
                           .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
+                          .AllowAnyMethod();
+                    
+                    if (corsAllowCredentials)
+                    {
+                        policy.AllowCredentials();
+                    }
                 });
             });
 
