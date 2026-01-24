@@ -1,5 +1,7 @@
 using DemoDeck.Auth.Api.Services;
 using DemoDeck.Auth.Api.Models;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace DemoDeck.Auth.Api
 {
@@ -35,6 +37,28 @@ namespace DemoDeck.Auth.Api
 
             // HTTP Client for Tenant API calls
             builder.Services.AddHttpClient();
+
+            // OpenTelemetry Tracing
+            builder.Services.AddOpenTelemetry()
+                .ConfigureResource(resource => resource
+                    .AddService(serviceName: "auth-api", serviceVersion: "1.0.0")
+                    .AddAttributes(new Dictionary<string, object>
+                    {
+                        ["deployment.environment"] = builder.Environment.EnvironmentName,
+                        ["service.namespace"] = "demodeck"
+                    }))
+                .WithTracing(tracing => tracing
+                    .AddAspNetCoreInstrumentation(opts =>
+                    {
+                        opts.RecordException = true;
+                        opts.Filter = ctx => !ctx.Request.Path.StartsWithSegments("/health");
+                    })
+                    .AddHttpClientInstrumentation(opts => opts.RecordException = true)
+                    .AddOtlpExporter(opts =>
+                    {
+                        opts.Endpoint = new Uri(builder.Configuration["OpenTelemetry:OtlpEndpoint"]
+                            ?? "http://tempo.observability.svc.cluster.local:4317");
+                    }));
 
             // JWT Configuration
             var jwtSettings = new JwtSettings
