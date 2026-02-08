@@ -7,6 +7,7 @@
     <UserSecretsId>c7e9c02f-a780-4767-b4d4-eec77d83e114</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+    <DefaultItemExcludes>$(DefaultItemExcludes);DemoDeck.Auth.Api.Tests\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
